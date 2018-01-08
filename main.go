@@ -1,8 +1,10 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 	"net/http"
 )
 
@@ -26,6 +28,21 @@ func newRouter() *mux.Router {
 }
 
 func main() {
+
+	connString := "dbname=bird_encyclopedia sslmode=disable user=postgres"
+
+	db, err := sql.Open("postgres", connString)
+
+	if err != nil {
+		panic(err)
+	}
+	err = db.Ping()
+
+	if err != nil {
+		panic(err)
+	}
+
+	InitStore(&dbStore{db: db})
 
 	r := newRouter()
 
